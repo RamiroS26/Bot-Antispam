@@ -4,7 +4,7 @@ import logging
 import os
 
 TOKEN = os.environ["TOKEN"]
-CHANNEL_ID = int(os.environ["CHANNEL_ID"])
+CHANNEL_IDS = [int(x) for x in os.environ["CHANNEL_IDS"].split(",")]                     #poner los ids separados por , sin espacios 123456789,987654321,111222333 etc
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,14 +20,14 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 @bot.event
 async def on_ready():
     log.info(f"Bot conectado {bot.user} (ID: {bot.user.id})")
-    log.info(f"Canal: {CHANNEL_ID}")
+    log.info(f"Canales: CHANNEL_IDS")
 
 @bot.event
 async def on_message(message: discord.Message):
     # bot mssgs
     if message.author == bot.user:
         return
-    if message.channel.id != CHANNEL_ID:
+    if message.channel.id not in CHANNEL_IDS:
         await bot.process_commands(message)
         return
     guild = message.guild
